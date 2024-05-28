@@ -44,6 +44,8 @@ public class BoardController{	// new BoardController();
 	@GetMapping("/boardContent.do/{idx}")
 	public String boardContent(@PathVariable("idx") int idx, Model model) { // ?idx=6
 		Board vo = mapper.boardContent(idx);
+		// 조회수 증가
+		mapper.boardCount(idx);
 		model.addAttribute("vo", vo);
 		return "boardContent"; // boardContent.jsp
 	}

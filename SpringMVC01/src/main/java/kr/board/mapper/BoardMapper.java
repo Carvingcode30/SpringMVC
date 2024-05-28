@@ -21,4 +21,6 @@ public interface BoardMapper {	 // Sqlsessionfactory
      
      public void boardUpdate(Board vo);
      
+     @Update("update board.myboard set count=count+1 where idx=#{idx}")
+     public void boardCount(int idx);
 }
