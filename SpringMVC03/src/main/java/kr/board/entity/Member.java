@@ -12,4 +12,6 @@ public class Member {
 	private String memGender;
 	private String memEmail;
 	private String memProfile;
+
 }
+

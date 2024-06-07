@@ -52,18 +52,30 @@
 			listHtml+="<td>내용</td>";
 			listHtml+="<td colspan='4'>";
 			listHtml+="<textarea id='ta"+obj.idx+"' readonly rows='7' class='form-control'></textarea>"
-			listHtml+="<br/>";
-			listHtml+="<span id='ub"+obj.idx+"'><button class='btn btn-success btn-sm' onclick='goUpdateForm("+obj.idx+")'>수정화면</button></span>&nbsp;";
-			listHtml+="<button class='btn btn-warning btn-sm' onclick='goDelete("+obj.idx+")'>삭제</button>";
+			
+			// 자기 자신의 글만 수정 / 삭제 가능	
+			if("${mvo.memID}"==obj.memID) { // 문자열 비교를 위해 ""로 묶어야됨 
+				listHtml+="<br/>";
+				listHtml+="<span id='ub"+obj.idx+"'><button class='btn btn-success btn-sm' onclick='goUpdateForm("+obj.idx+")'>수정화면</button></span>&nbsp;";
+				listHtml+="<button class='btn btn-warning btn-sm' onclick='goDelete("+obj.idx+")'>삭제</button>";
+			} else {
+				listHtml+="<br/>";
+				listHtml+="<span id='ub"+obj.idx+"'><button disabled class='btn btn-success btn-sm' onclick='goUpdateForm("+obj.idx+")'>수정화면</button></span>&nbsp;";
+				listHtml+="<button disabled class='btn btn-warning btn-sm' onclick='goDelete("+obj.idx+")'>삭제</button>";
+			}
+			
 			listHtml+="</td>";
 			listHtml+="</tr>";
 		});
-		
+		// 로그인을 해야 보이는 부분
+		if(${!empty mvo}) {
 		listHtml+="<tr>";
 		listHtml+="<td colspan='5'>";
 		listHtml+="<button class='btn btn-primary btn-sm' onclick='goForm()'>글쓰기</button>";
 		listHtml+="</td>";
 		listHtml+="</tr>";
+		}
+		
 		listHtml+="</table>";
 		$("#view").html(listHtml); // 선택자 기호
 		
@@ -170,7 +182,7 @@
 <body>
 <div class="container">
 <jsp:include page="../common/header.jsp"></jsp:include>
-  <h2>Spring MVC03</h2>
+  <h2>회원게시판</h2>
   <div class="panel panel-default">
     <div class="panel-heading">BOARD</div>
     <div class="panel-body" id="view">
@@ -178,6 +190,7 @@
     </div>
     <div class="panel-body" id="wform" style="display: none">
     	<form id="frm">
+    	<input type="hidden" name="memID" id="memID" value="${mvo.memID }"
     	<table class="table">
     		<tr>
     			<td>제목</td>
@@ -189,7 +202,7 @@
     		</tr>
     		<tr>
     			<td>작성자</td>
-    			<td><input type="text" id="writer" name="writer" class="form-control"></td>
+    			<td><input type="text" id="writer" name="writer" class="form-control" value="${mvo.memName }" readonly="readonly"></td>
     		</tr>
     		<tr>
     			<td colspan="2" align="center">

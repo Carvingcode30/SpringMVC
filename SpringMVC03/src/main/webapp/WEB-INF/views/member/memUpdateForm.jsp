@@ -20,27 +20,6 @@
   				$("#myMessage").modal("show");
   		}
   	});
-  
-  	function registerCheck() {
-  		var memID = $("#memID").val();
-  		$.ajax({
-  			url : "${contextPath}/memRegisterCheck.do",
-			type : "get",
-			data : {"memID" : memID},
-			success : function(result) {
-				//중복유무 출력(result=1 : 사용할 수 있는 아이디, 0 : 사용할 수 없는 아이디)
-				if(result==1) {
-					$("#checkMessage").html("사용할 수 있는 아이디입니다.")
-					$("#checkType").attr("class","modal-content panel-success");
-				} else {
-					$("#checkMessage").html("사용할 수 없는 아이디입니다.")
-					$("#checkType").attr("class","modal-content panel-warning");
-				}
-				$("#myModal").modal("show");
-			},
-			error : function() { alert("error"); }
-  		});
-  	};
   	
   	function passwordCheck() {
   		var memPassword1=$("#memPassword1").val();
@@ -53,7 +32,7 @@
   			$("#memPassword").val(memPassword1);
   		}
   	}
-  function goInsert() {
+  function goUpdate() {
 	  var memAge = $("#memAge").val();
 	  if(memAge==null || memAge=="" || memAge==0) {
 		  alert("나이를 입력하세요");
@@ -67,17 +46,17 @@
 <body>
 <div class="container">
 <jsp:include page="../common/header.jsp"></jsp:include>
-  <h2>회원가입</h2>
+  <h2>Spring MVC03</h2>
   <div class="panel panel-default">
-    <div class="panel-heading">회원가입</div>
+    <div class="panel-heading">회원정보수정 양식</div>
     <div class="panel-body">
-		<form name="frm" action="${contextPath}/memRegister.do" method="post">
+		<form name="frm" action="${contextPath}/memUpdate.do" method="post">
+			<input type="hidden" id="memID" name="memID" value="${mvo.memID }"/>
 			<input type="hidden" id="memPassword" name="memPassword" value=""/>
 			<table class="table table-bordered" style="text-align: center; border: 1px solid #dddddd;">
 				<tr>
 					<td style="width: 110px; vertical-align: middle;">아이디</td>
-					<td><input class="form-control" id="memID" name="memID" type="text" maxlength="20" placeholder="아이디를 입력하세요"></td>
-					<td style="width: 110px;"><button type="button" class="btn btn-primary btn-sm" onclick="registerCheck()">중복확인</button></td>
+					<td>${mvo.memID }</td>
 				</tr>
 				<tr>
 					<td style="width: 110px; vertical-align: middle;">비밀번호</td>						<!-- 비밀번호 눌렀을 때 같은지 확인 -->
@@ -89,22 +68,24 @@
 				</tr>
 				<tr>
 					<td style="width: 110px; vertical-align: middle;">이름</td>
-					<td colspan="2"><input class="form-control" id="memName" name="memName" type="text" maxlength="20" placeholder="성함을 입력허세요"></td>
+					<td colspan="2"><input class="form-control" id="memName" name="memName" type="text" maxlength="20" placeholder="성함을 입력허세요" value="${mvo.memName }"></td>
 				</tr>
 				<tr>
 					<td style="width: 110px; vertical-align: middle;">나이</td>
-					<td colspan="2"><input class="form-control" id="memAge" name="memAge" type="number" maxlength="20" placeholder="나이를 입력하세요"></td>
+					<td colspan="2"><input class="form-control" id="memAge" name="memAge" type="number" maxlength="20" placeholder="나이를 입력하세요" value="${mvo.memAge }"></td>
 				</tr>
 				<tr>
 					<td style="width: 110px; vertical-align: middle;">성별</td>
 					<td colspan="2">
 						<div class="form-group" style="text-align: center; margin: 0 auto;">
 							<div class="btn-group" data-toggle="buttons">
-								<label class="btn btn-primary active"	>
-									<input type="radio" id="memGenderMale" name="memGender" autocomplete="off" value="남자" checked>남자
+								<label class="btn btn-primary <c:if test="${mvo.memGender eq '남자'}">active</c:if>">
+									<input type="radio" id="memGenderMale" name="memGender" autocomplete="off" value="남자" 
+									<c:if test="${mvo.memGender eq '남자'}">checked</c:if> />남자
 								</label>
-								<label class="btn btn-primary active"	>
-									<input type="radio" id="memGenderFeMale" name="memGender" autocomplete="off" value="여자">여자
+								<label class="btn btn-primary <c:if test="${mvo.memGender eq '여자'}">active</c:if>">
+									<input type="radio" id="memGenderFeMale" name="memGender" autocomplete="off" value="여자"
+									<c:if test="${mvo.memGender eq '여자'}">checked</c:if> />여자
 								</label>
 							</div>
 						</div>
@@ -112,37 +93,17 @@
 				</tr>
 				<tr>
 					<td style="width: 110px; vertical-align: middle;">이메일</td>
-					<td colspan="2"><input class="form-control" id="memEmail" name="memEmail" type="text" maxlength="20" placeholder="이메일을 입력하세요"></td>
+					<td colspan="2"><input class="form-control" id="memEmail" name="memEmail" type="text" maxlength="20" placeholder="이메일을 입력하세요" value="${mvo.memEmail }"></td>
 				</tr>
 				<tr>
 					<td colspan="3" style="text-align: left;">
 						<span id="passMessage" style="color: red"></span>
-						<input type="button" class="btn btn-primary btn-sm pull-right" value="등록" onclick="goInsert()"/>
+						<input type="button" class="btn btn-primary btn-sm pull-right" value="수정" onclick="goUpdate()"/>
 					</td>
 				</tr>
 			</table>
 		</form>
     </div>
-    <!-- 다이얼로그창(모달)  -->
-     <!-- Modal -->
-  <div class="modal fade" id="myModal" role="dialog">
-    <div class="modal-dialog">
-      <!-- Modal content-->
-      <div id="checkType" class="modal-content">
-        <div class="modal-header panel-heading">
-          <button type="button" class="close" data-dismiss="modal">&times;</button>
-          <h4 class="modal-title">메세지 확인</h4>
-        </div>
-        <div class="modal-body">
-          <p id="checkMessage"></p>
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
 	<!--  실패 메세지를 출력(modal) -->
 	<!-- 다이얼로그창(모달)  -->
      <!-- Modal -->

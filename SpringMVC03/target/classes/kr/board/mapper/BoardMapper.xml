@@ -7,8 +7,8 @@
 	</select>
 
 	<insert id="boardInsert" parameterType="kr.board.entity.Board">
-		insert into board.myboard(title, content, writer)
-		values(#{title}, #{content}, #{writer})
+		insert into board.myboard(memID, title, content, writer)
+		values(#{memID}, #{title}, #{content}, #{writer})
 	</insert>
 
 	<select id="boardContent" resultType="kr.board.entity.Board"> <!-- 파라미터가 하나면 파라미터 타입 생략 가능 -->

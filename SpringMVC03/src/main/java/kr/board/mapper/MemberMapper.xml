@@ -8,7 +8,26 @@
 
 	<insert id="register" parameterType="kr.board.entity.Member">
 		insert into
-			mem_tbl(memID, memPassword, memName, memAge, memGender, memEmail, memProfile)
+			board.mem_tbl(memID, memPassword, memName, memAge, memGender, memEmail, memProfile)
 			values (#{memID}, #{memPassword}, #{memName}, #{memAge}, #{memGender}, #{memEmail}, #{memProfile})
 	</insert>
+	
+	<select id="memLogin" parameterType="kr.board.entity.Member" resultType="kr.board.entity.Member">
+		select * from board.mem_tbl
+		where memID = #{memID} and memPassword=#{memPassword}
+	</select>
+	
+	<update id="memUpdate" parameterType="kr.board.entity.Member">
+		update board.mem_tbl set memPassword=#{memPassword}, memName=#{memName}, memAge=#{memAge}, memGender=#{memGender},
+		memEmail=#{memEmail}
+		where memID=#{memID}
+	</update>
+	
+	<select id="getMember" resultType="kr.board.entity.Member">
+		select * from board.mem_tbl where memID = #{memID}
+	</select>
+	
+	<update id="memProfileUpdate" parameterType="kr.board.entity.Member">
+		update board.mem_tbl set memProfile=#{memProfile} where memID = #{memID}
+	</update>
 </mapper>
